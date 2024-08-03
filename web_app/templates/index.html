@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Classification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            max-width: 600px;
+            margin: auto;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 20px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .results {
+            max-width: 600px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Text Classification</h1>
+    <form id="textForm">
+        <textarea id="inputText" placeholder="Enter text here..."></textarea>
+        <button type="submit">Submit</button>
+    </form>
+    <div class="results">
+        <h2>Predictions:</h2>
+        <ul id="predictionsList"></ul>
+    </div>
+    <script>
+        document.getElementById('textForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const inputText = document.getElementById('inputText').value;
+
+            if (!inputText) {
+                alert("Please enter some text.");
+                return;
+            }
+
+            fetch('http://127.0.0.1:5000/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: inputText })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const predictionsList = document.getElementById('predictionsList');
+                predictionsList.innerHTML = '';
+
+                const labels = ['Toxic', 'Severe Toxic', 'Obscene', 'Threat', 'Insult', 'Identity Hate'];
+
+                data.predictions.forEach((prediction, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${labels[index]}: ${prediction.toFixed(4)}`;
+                    predictionsList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
