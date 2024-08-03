@@ -5,7 +5,7 @@ import pandas as pd
 from tensorflow.keras.layers import TextVectorization
 
 # Load the saved model
-model = tf.keras.models.load_model('web_app/new_model.h5')
+model = tf.keras.models.load_model('new_model.h5')
 
 # Define constants
 MAX_FEATURES = 100000
@@ -16,7 +16,7 @@ vectorizer = TextVectorization(max_tokens=MAX_FEATURES, output_sequence_length=O
 
 # You need to adapt the vectorizer with your actual training data
 # Example data for adaptation
-df = pd.read_csv('web_app/train.csv')
+df = pd.read_csv('train.csv')
 x = df['comment_text']  # Replace with actual training data
 vectorizer.adapt(x.values)
 
@@ -53,4 +53,3 @@ if st.button('Analyze'):
             st.write(f"{yes_no} - {label.capitalize()}: {score:.2%}")
     else:
         st.write("Please enter a comment to analyze.")
-`
